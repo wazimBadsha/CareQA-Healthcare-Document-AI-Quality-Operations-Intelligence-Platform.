@@ -1,20 +1,42 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-careqa}
+      POSTGRES_USER: ${POSTGRES_USER:-careqa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-careqa_dev_only}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   api:
     build: ./services/api
-    ports: ["8000:8000"]
     environment:
-      CAREQA_MODE: offline-demo
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready')"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://careqa:careqa_dev_only@postgres:5432/careqa}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   web:
     build:
       context: ./apps/web
-    ports: ["3000:3000"]
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
     environment:
-      CAREQA_API_URL: http://api:8000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
     depends_on:
-      api:
-        condition: service_healthy
+      - api
+
+volumes:
+  postgres_data:
+
+

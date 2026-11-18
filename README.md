@@ -1,78 +1,59 @@
 # CareQA
 
-Healthcare Document AI Quality & Operations Intelligence Platform — an independent portfolio engineering project using synthetic healthcare-claim documents only.
+CareQA is an independent portfolio application for evaluating AI-assisted extraction from **synthetic healthcare documents**. It is not a medical device, clinical decision-support system, or compliance-certified platform.
 
-CareQA evaluates structured AI extraction against synthetic reference annotations, produces deterministic field-level metrics, and exposes a dashboard. The offline demo requires no API key and does not require a human reviewer to complete a run.
+The executable vertical slice is deliberately offline-first: deterministic synthetic fixtures flow through a mock extraction adapter, grounded field-level evaluation, persistent run records, comparison analytics, and a Next.js dashboard. No API key or patient data is needed.
 
-## Current implementation status
+## What is implemented
 
-- [x] Engineering handoff and architecture baseline — [`docs/ENGINEERING_HANDOFF.md`](docs/ENGINEERING_HANDOFF.md)
-- [x] Deterministic synthetic claims benchmark
-- [x] Offline mock prediction adapter with controlled injected defects
-- [x] Field evaluation and aggregate precision/recall/F1/completeness metrics
-- [x] FastAPI health, overview and run endpoints
-- [x] Next.js dashboard wired to the API
-- [x] Backend tests and GitHub Actions workflow
-- [ ] PostgreSQL persistence and migrations
-- [ ] Redis/Celery asynchronous processing
-- [ ] PDF/OCR and object storage
-- [ ] Live LLM provider adapter and model experiment tracking
-- [ ] dbt and Power BI export models
-- [ ] Full tenant authentication/RLS and production deployment
-
-This is an incremental engineering release, not a claim that the full target architecture is already implemented.
+- FastAPI API, versioned under `/api/v1`, with OpenAPI documentation at `/docs`
+- Postgres-ready SQLAlchemy persistence and an SQLite test/local fallback
+- Tenant-scoped datasets, cases, documents, runs, predictions, field results, metrics, and audit records
+- Deterministic benchmark generator, offline adapter, reproducible run metadata, and defect injection
+- Exact/normalised match, completeness, set precision/recall/F1, numeric tolerance, and schema-validity metrics
+- Next.js dashboard for overview, runs, drill-down results, and compatible-run comparison
+- Docker Compose development environment, tests, CI, architecture and operations docs
 
 ## Quick start
 
-### Backend
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+Open `http://localhost:3000`. The API seeds a demo tenant and dataset on first boot. To create and evaluate a new deterministic benchmark:
 
 ```bash
-python -m pip install -r services/api/requirements.txt
+docker compose exec api python -m app.cli demo --cases 40 --seed 2026
+```
+
+The command prints the run ID; use it in the dashboard or API. To run API tests locally:
+
+```bash
 cd services/api
-uvicorn app.main:app --reload
+python -m pip install -r requirements-dev.txt
+pytest
 ```
 
-Open `http://localhost:8000/docs` for OpenAPI.
-
-### Frontend
-
-In another terminal:
+## API examples
 
 ```bash
-cd apps/web
-npm install
-npm run dev
+curl http://localhost:8000/health/ready
+curl http://localhost:8000/api/v1/overview
+curl -X POST http://localhost:8000/api/v1/runs \
+  -H 'Content-Type: application/json' \
+  -d '{"dataset_id":"<dataset UUID>","prompt_version":"baseline-v1"}'
 ```
 
-Open `http://localhost:3000`.
+All protected-domain endpoints accept `X-Tenant-Id`; the default is the seeded `demo` tenant. This is a development tenant boundary, not production authentication.
 
-Set `CAREQA_API_URL=http://localhost:8000` if the API runs elsewhere. For Docker Compose, the frontend uses the internal `http://api:8000` service address.
+## Important limitations
 
-### Run tests
+- The initial release has a synchronous, deterministic offline execution path. Redis/Celery, live provider adapters, OCR/PDF processing, object storage, MLflow, dbt and operational telemetry are planned extension points, not implemented claims.
+- The supplied mock prediction is intentionally imperfect so the dashboard exposes detected defects. It must not be interpreted as a real clinical-model benchmark.
+- The project contains synthetic data only. Never upload identifiable patient data, credentials, or confidential records.
+- Use a proper identity provider, tenant RLS, signed artifact access, rate limiting, malware scanning, secrets management, and a formal regulatory review before any production use.
 
-From repository root:
+Further details: [architecture](docs/architecture.md), [metric contract](docs/metrics.md), [operations](docs/operations.md), and [security boundary](docs/security.md).
 
-```bash
-python -m pip install -r services/api/requirements.txt
-python -m pytest -q
-```
 
-### Demo API
-
-```bash
-curl http://localhost:8000/api/v1/overview?cases=24\&seed=42
-curl -X POST http://localhost:8000/api/v1/runs \\
-  -H 'Content-Type: application/json' \\
-  -d '{"cases":24,"seed":42}'
-```
-
-## Evaluation semantics
-
-- Normalized field matching preserves numeric/string distinction only through canonical string normalisation; domain-specific rules should be added for production field types.
-- Completeness is based on required reference fields populated by prediction.
-- Precision, recall and F1 are aggregated over comparable reference/predicted fields.
-- Mock predictions deliberately inject a deterministic proportion of defects to demonstrate metric behaviour. These metrics are not model performance claims.
-
-## Safety boundary
-
-Use only synthetic or explicitly approved public non-sensitive data. Do not upload patient records or former-employer data. CareQA is not a clinical product and makes no healthcare regulatory compliance claim.

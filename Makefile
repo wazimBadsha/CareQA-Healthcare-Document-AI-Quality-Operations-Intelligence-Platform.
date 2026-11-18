@@ -1,17 +1,28 @@
-.PHONY: api-install test api web-install web-dev demo compose-up compose-down
-api-install:
-	python -m pip install -r services/api/requirements.txt
-test:
-	python -m pytest -q
-api:
-	cd services/api && uvicorn app.main:app --reload
-web-install:
-	cd apps/web && npm install
-web-dev:
-	cd apps/web && npm run dev
-demo:
-	cd services/api && python -c 'from app.demo import run_demo; import json; print(json.dumps(run_demo(), indent=2))'
-compose-up:
+.DEFAULT_GOAL := help
+
+.PHONY: help up down logs test api-test web-build demo
+
+help:
+	@echo "Targets: up down logs test api-test web-build demo"
+
+up:
 	docker compose up --build
-compose-down:
+
+down:
 	docker compose down
+
+logs:
+	docker compose logs -f
+
+test: api-test web-build
+
+api-test:
+	docker compose run --rm api pytest
+
+web-build:
+	docker compose run --rm web npm run build
+
+demo:
+	docker compose exec api python -m app.cli demo --cases 40 --seed 2026
+
+

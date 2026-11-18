@@ -1,23 +1,26 @@
 # Implementation status
 
-This repository currently contains the first executable offline vertical slice. The engineering handoff defines the target architecture; this file distinguishes delivered capability from planned work.
+This repository implements a persisted, deterministic P0 vertical slice. The engineering handoff remains the architecture target; this document distinguishes working code from planned extensions.
 
 ## Delivered
-- Deterministic synthetic claims benchmark generation.
-- Offline mock model adapter with reproducible injected defects.
-- Deterministic field evaluation and aggregate metrics.
-- FastAPI live/ready endpoints, overview and run API.
-- Next.js dashboard rendering API-backed KPI values.
-- Backend unit/API tests and GitHub Actions CI.
 
-## Not yet delivered
-- PostgreSQL persistence, Alembic migrations, tenant authentication/RLS.
-- Durable Redis/Celery queue and transactional outbox.
-- File upload pipeline, PyMuPDF/Tesseract, MinIO/S3.
-- Live provider integration, summary LLM judge, MLflow.
-- dbt project and Power BI report.
-- OpenTelemetry/Prometheus/Grafana integration.
-- Full frontend component/e2e suite, deployment and security audit.
+- Deterministic synthetic benchmark generation with a stable seed and content hash.
+- Tenant-scoped SQLite/PostgreSQL-ready persistence for datasets, cases, documents, model configuration, runs, predictions, field outcomes, aggregate metrics, and audit metadata.
+- Alembic initial schema migration and Docker Compose PostgreSQL service.
+- Offline adapter with controlled reproducible defects, field exact/normalized checks, completeness, numeric tolerance, and set precision/recall/F1.
+- Synchronous worker-ready run service, reproducibility metadata, run lifecycle persistence, results/metrics APIs, and same-dataset comparison.
+- API-backed dashboard with loading/error status, live overview, benchmark trigger, run history, and field-level outcome inspection.
+- Backend test coverage for metrics, persistence path, tenant denial, and comparison; CI runs Ruff, pytest, frontend type checking/build, and secret scanning.
 
-## Known metric interpretation
-The first release uses deterministic synthetic data and an offline adapter. Its scores validate the evaluator implementation and dashboard wiring only. They must not be represented as healthcare model quality or operational outcomes.
+## Planned / not claimed
+
+- Real identity authentication, RBAC, PostgreSQL row-level security, rate limiting, and production secrets management.
+- Binary upload validation, PDF/OCR, malware scanning, object storage, signed URLs, retention/deletion workflows.
+- Redis/Celery/outbox, retry/idempotency worker execution, live LLM provider adapters, summary judge signals, and MLflow.
+- dbt/Power BI export models, OpenTelemetry/Prometheus/Grafana, frontend component tests, and Playwright end-to-end coverage.
+
+## Metric interpretation
+
+Scores are generated only from synthetic fixtures and a deterministic mock adapter. They validate implementation behavior and must not be represented as healthcare model performance, clinical quality, or operational production outcomes.
+
+
