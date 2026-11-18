@@ -42,12 +42,13 @@ def _aggregate(field_results: list[FieldResult], predictions: list[Prediction]) 
     normalized = sum(result.metric_json.get("normalized_match", False) for result in field_results)
     complete = sum(result.metric_json.get("complete", False) for result in required)
     set_details = [result.metric_json for result in field_results if "f1" in result.metric_json]
+    invalid_schema_prediction_ids = {result.prediction_id for result in field_results if result.outcome == "missing"}
     metrics = {
         "field_exact_accuracy": exact / count if count else 0.0,
         "field_normalized_accuracy": normalized / count if count else 0.0,
         "completeness": complete / len(required) if required else 1.0,
         "defect_count": float(sum(result.outcome in {"mismatch", "missing"} for result in field_results)),
-        "schema_validity": 1.0,
+        "schema_validity": (len(predictions) - len(invalid_schema_prediction_ids)) / len(predictions) if predictions else 1.0,
         "average_latency_ms": sum(pred.latency_ms for pred in predictions) / len(predictions) if predictions else 0.0,
     }
     for key in ("precision", "recall", "f1"):
