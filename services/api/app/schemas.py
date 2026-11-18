@@ -1,13 +1,17 @@
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DatasetCreate(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     name: str = Field(min_length=2, max_length=160)
     version: str = Field(min_length=1, max_length=80)
-    schema_json: dict[str, Any] = Field(default_factory=dict)
+    schema_definition: dict[str, Any] = Field(
+        default_factory=dict, alias="schema_json", serialization_alias="schema_json"
+    )
 
 
 class CaseCreate(BaseModel):
@@ -33,6 +37,7 @@ class RunCreate(BaseModel):
 
 class DocumentCreate(BaseModel):
     """Text-only synthetic-document ingestion for the offline benchmark."""
+
     storage_key: str = Field(min_length=1, max_length=255)
     extracted_text: str = Field(min_length=1, max_length=100_000)
     dataset_case_id: str | None = None
