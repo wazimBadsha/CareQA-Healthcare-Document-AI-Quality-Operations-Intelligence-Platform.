@@ -1,0 +1,20 @@
+services:
+  api:
+    build: ./services/api
+    ports: ["8000:8000"]
+    environment:
+      CAREQA_MODE: offline-demo
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  web:
+    build:
+      context: ./apps/web
+    ports: ["3000:3000"]
+    environment:
+      CAREQA_API_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
