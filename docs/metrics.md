@@ -12,5 +12,3 @@ CareQA preserves source/reference values and calculates comparison signals separ
 | Average latency | total recorded adapter milliseconds / predictions | Offline adapter timings are synthetic instrumentation, not an infrastructure benchmark. |
 
 Aggregate field metrics are calculated from persisted field-level denominators; the service does not average percentages per case. Model-judge or human-adjudication scores are not present in this release and must remain separate if added later.
-
-

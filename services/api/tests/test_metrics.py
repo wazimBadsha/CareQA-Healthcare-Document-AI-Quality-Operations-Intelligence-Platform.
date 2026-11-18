@@ -26,5 +26,3 @@ def test_missing_and_array_fields_are_auditable():
 
 def test_synthetic_generation_is_deterministic():
     assert generate_cases(3, 7) == generate_cases(3, 7)
-
-

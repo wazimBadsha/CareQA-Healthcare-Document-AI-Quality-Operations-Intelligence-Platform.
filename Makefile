@@ -24,5 +24,3 @@ web-build:
 
 demo:
 	docker compose exec api python -m app.cli demo --cases 40 --seed 2026
-
-

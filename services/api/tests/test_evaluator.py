@@ -21,5 +21,3 @@ def test_field_results_and_entity_f1_are_reproducible():
     assert detail["normalized_match"] is True
     assert set_scores(["A", "B"], ["a", "B"])["f1"] == 1
     assert generate_cases(2, 11) == generate_cases(2, 11)
-
-

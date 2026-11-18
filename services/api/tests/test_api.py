@@ -36,5 +36,3 @@ def test_tenant_scope_and_synthetic_document_ingest(client):
     assert document.status_code == 201
     detail = client.get(f"/api/v1/documents/{document.json()['id']}")
     assert detail.json()["extracted_text"] == "Synthetic only."
-
-

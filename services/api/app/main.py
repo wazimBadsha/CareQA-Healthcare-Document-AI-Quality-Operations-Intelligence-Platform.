@@ -210,5 +210,3 @@ def compare(baseline: str, candidate: str, tenant: Tenant = Depends(tenant_scope
 @app.get("/api/v1/audit/events")
 def audit_events(tenant: Tenant = Depends(tenant_scope), db: Session = Depends(get_db)) -> list[dict]:
     return [{"action": event.action, "resource_type": event.resource_type, "resource_id": event.resource_id, "metadata": event.metadata_json, "created_at": event.created_at} for event in db.scalars(select(AuditEvent).where(AuditEvent.tenant_id == tenant.id).order_by(AuditEvent.created_at.desc()).limit(100))]
-
-

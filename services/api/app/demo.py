@@ -9,5 +9,3 @@ from .synthetic import generate_cases
 def offline_predict(case, seed: int = 42):
     from .evaluator import OfflineAdapter
     return OfflineAdapter().predict(case.reference, seed, case.case_key)[0]
-
-

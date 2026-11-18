@@ -42,5 +42,3 @@ def seed_demo(db: Session) -> None:
     exists = db.scalar(select(Dataset).where(Dataset.tenant_id == tenant.id).limit(1))
     if not exists:
         create_synthetic_dataset(db, tenant, "Synthetic CareQA benchmark", "v1", 24, 2026)
-
-

@@ -21,5 +21,3 @@ flowchart LR
 ## Deliberately deferred
 
 Celery/Redis/outbox, PDF/OCR, object storage, authenticated identities/RBAC/RLS, live LLM provider adapters, summary judge signals, dbt, MLflow and production telemetry are not implemented. They must not be represented as available features or compliance controls.
-
-

@@ -12,5 +12,3 @@ coverage/
 services/api/careqa.db
 *.sqlite3
 datasets/synthetic/*.jsonl
-
-

@@ -55,5 +55,3 @@ All protected-domain endpoints accept `X-Tenant-Id`; the default is the seeded `
 - Use a proper identity provider, tenant RLS, signed artifact access, rate limiting, malware scanning, secrets management, and a formal regulatory review before any production use.
 
 Further details: [architecture](docs/architecture.md), [metric contract](docs/metrics.md), [operations](docs/operations.md), and [security boundary](docs/security.md).
-
-

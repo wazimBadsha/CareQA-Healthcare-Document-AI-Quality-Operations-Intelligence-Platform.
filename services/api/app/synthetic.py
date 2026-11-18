@@ -55,5 +55,3 @@ def generate_cases(count: int, seed: int) -> list[SyntheticCase]:
 def dataset_hash(cases: list[SyntheticCase]) -> str:
     stable = [{"key": c.case_key, "reference": c.reference, "source": c.source_text} for c in cases]
     return hashlib.sha256(json.dumps(stable, sort_keys=True).encode()).hexdigest()
-
-

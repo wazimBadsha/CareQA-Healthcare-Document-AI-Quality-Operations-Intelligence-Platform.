@@ -106,5 +106,3 @@ export default function Home() {
 function Metric({ label, value, detail, tone = "" }: { label: string; value: string; detail: string; tone?: string }) { return <article className={`metric ${tone}`}><p>{label}</p><strong>{value}</strong><small>{detail}</small></article>; }
 function Empty({ text }: { text: string }) { return <p className="empty">{text}</p>; }
 function show(value: unknown) { return value === null || value === undefined ? "—" : Array.isArray(value) ? value.join(", ") : String(value); }
-
-

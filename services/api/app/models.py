@@ -132,5 +132,3 @@ class AuditEvent(Timestamped, Base):
     resource_type: Mapped[str] = mapped_column(String(80))
     resource_id: Mapped[str] = mapped_column(String(36))
     metadata_json: Mapped[dict] = mapped_column(JSONType, default=dict)
-
-

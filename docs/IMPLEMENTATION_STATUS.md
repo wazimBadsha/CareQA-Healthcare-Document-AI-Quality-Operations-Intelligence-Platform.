@@ -22,5 +22,3 @@ This repository implements a persisted, deterministic P0 vertical slice. The eng
 ## Metric interpretation
 
 Scores are generated only from synthetic fixtures and a deterministic mock adapter. They validate implementation behavior and must not be represented as healthcare model performance, clinical quality, or operational production outcomes.
-
-

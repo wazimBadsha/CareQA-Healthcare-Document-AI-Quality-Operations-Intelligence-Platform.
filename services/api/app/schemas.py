@@ -63,5 +63,3 @@ class MetricOut(BaseModel):
     metric_name: str
     metric_value: float
     metric_unit: str
-
-

@@ -66,5 +66,3 @@ def evaluate_field(field: str, expected: object, actual: object, required: bool 
     if not complete and required:
         return "missing", detail
     return ("exact_match" if exact else "normalized_match" if normalised else "mismatch"), detail
-
-

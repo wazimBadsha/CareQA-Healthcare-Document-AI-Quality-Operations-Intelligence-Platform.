@@ -1,3 +1,1 @@
 """CareQA API application."""
-
-

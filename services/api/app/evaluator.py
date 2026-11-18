@@ -118,5 +118,3 @@ def execute_run(db: Session, run: EvaluationRun) -> EvaluationRun:
 
 def run_metadata(seed: int) -> dict:
     return {"runtime": "python", "python": platform.python_version(), "platform": platform.system(), "seed": seed}
-
-

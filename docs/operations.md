@@ -19,5 +19,3 @@ The API initialises the schema and seeds exactly one synthetic dataset on first 
 ## Current security boundary
 
 The text ingestion route exists solely for synthetic/demo text and stores a hash. It is not a binary upload pipeline. Before accepting user files, add MIME and magic-byte checks, page/size limits, server-side object names, malware scanning, signed short-lived access, retention/deletion controls, rate limits, real authentication, secret management, and a formal privacy/regulatory review.
-
-
